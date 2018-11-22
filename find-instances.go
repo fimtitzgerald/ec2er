@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -16,20 +15,19 @@ func getInstances() (interface{}, error) {
 	var region, profile string
 
 	flag.StringVar(&region, "region", "ca-central-1", "Region to look for instances - default to ca-central-1")
-	flag.StringVar(&profile,"profile", "default", "AWS Config profile to use for call")
+	flag.StringVar(&profile, "profile", "default", "AWS Config profile to use for call")
 	flag.Parse()
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		Profile: profile,
-		SharedConfigState: session.SharedConfigEnable,
+		Profile:                 profile,
+		SharedConfigState:       session.SharedConfigEnable,
 		AssumeRoleTokenProvider: stscreds.StdinTokenProvider,
-   	}))
+	}))
 
 	svc := ec2.New(sess, &aws.Config{
-		Region:      &region,
+		Region: &region,
 	})
 
-	fmt.Println(region, profile, "break 1")
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			&ec2.Filter{

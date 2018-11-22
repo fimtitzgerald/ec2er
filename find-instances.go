@@ -1,11 +1,10 @@
 package main
 
 import (
-	"bufio"
+	"flag"
 	"fmt"
 	"log"
-	"os"
-	"strings"
+
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
@@ -13,31 +12,24 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
-var roleArn = os.Getenv("AWS_PROFILE_ARN")
-
-func getRegion() string {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter region: ")
-
-	input, _ := reader.ReadString('\n')
-
-	region := strings.TrimRight(input, "\n")
-
-	return region
-}
-
 func getInstances() (interface{}, error) {
-	region := getRegion()
+	var region, profile string
 
-	sess := session.Must(session.NewSession())
+	flag.StringVar(&region, "region", "ca-central-1", "Region to look for instances - default to ca-central-1")
+	flag.StringVar(&profile,"profile", "default", "AWS Config profile to use for call")
+	flag.Parse()
 
-	creds := stscreds.NewCredentials(sess, roleArn)
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		Profile: profile,
+		SharedConfigState: session.SharedConfigEnable,
+		AssumeRoleTokenProvider: stscreds.StdinTokenProvider,
+   	}))
 
 	svc := ec2.New(sess, &aws.Config{
-		Credentials: creds,
 		Region:      &region,
 	})
 
+	fmt.Println(region, profile, "break 1")
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			&ec2.Filter{

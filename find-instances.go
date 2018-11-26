@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
@@ -64,5 +65,10 @@ func getInstances() (interface{}, error) {
 }
 
 func main() {
+
+	if len(os.Args) < 3 {
+		panic("You must supply region and profile as arguments!")
+	}
+
 	getInstances()
 }

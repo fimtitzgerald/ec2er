@@ -66,7 +66,7 @@ func getInstances() (interface{}, error) {
 
 func main() {
 
-	if len(os.Args) < 2 {
+	if len(os.Args) < 3 {
 		panic("You must supply region and profile as arguments!")
 	}
 

@@ -78,8 +78,7 @@ func getInstances() (interface{}, error) {
 func main() {
 
 	if len(os.Args) < 3 {
-		fmt.Println("test-break")
-		panic("You must supply region and profile as arguments!")
+		log.Fatal("You must supply region and profile as arguments!")
 	}
 
 	getInstances()

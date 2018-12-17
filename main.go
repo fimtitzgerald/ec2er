@@ -53,6 +53,11 @@ func getInstances() (interface{}, error) {
 			if len(project) == 0 {
 				fmt.Println(*instance.InstanceId)
 				fmt.Println(*instance.PublicDnsName)
+				for _, tag := range instance.Tags {
+					if *tag.Key == "project" {
+						fmt.Println(*tag.Value)
+					}
+				}
 				fmt.Println("")
 			} else {
 				for _, tag := range instance.Tags {
@@ -61,8 +66,8 @@ func getInstances() (interface{}, error) {
 						fmt.Println(*instance.InstanceId)
 						fmt.Println(*instance.PublicDnsName)
 						fmt.Println("")
-					}				
-				}			
+					}
+				}
 			}
 		}
 	}
@@ -73,6 +78,7 @@ func getInstances() (interface{}, error) {
 func main() {
 
 	if len(os.Args) < 3 {
+		fmt.Println("test-break")
 		panic("You must supply region and profile as arguments!")
 	}
 

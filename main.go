@@ -13,10 +13,11 @@ import (
 )
 
 func getInstances() (interface{}, error) {
-	var region, profile string
+	var region, profile, project string
 
 	flag.StringVar(&region, "region", "ca-central-1", "Region to look for instances - default to ca-central-1")
 	flag.StringVar(&profile, "profile", "default", "AWS Config profile to use for call")
+	flag.StringVar(&project, "project", "", "Project to look for (via tags)")
 	flag.Parse()
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
@@ -49,15 +50,25 @@ func getInstances() (interface{}, error) {
 
 	for _, reservation := range res.Reservations {
 		for _, instance := range reservation.Instances {
-			for _, tag := range instance.Tags {
-				if *tag.Key == "project" {
-					fmt.Println(*tag.Value)
+			if len(project) == 0 {
+				fmt.Println(*instance.InstanceId)
+				fmt.Println(*instance.PublicDnsName)
+				for _, tag := range instance.Tags {
+					if *tag.Key == "project" {
+						fmt.Println(*tag.Value)
+					}
+				}
+				fmt.Println("")
+			} else {
+				for _, tag := range instance.Tags {
+					if *tag.Key == "project" && *tag.Value == project {
+						fmt.Println(*tag.Value)
+						fmt.Println(*instance.InstanceId)
+						fmt.Println(*instance.PublicDnsName)
+						fmt.Println("")
+					}
 				}
 			}
-			fmt.Println(*instance.InstanceId)
-			fmt.Println(*instance.PublicDnsName)
-			fmt.Println("")
-
 		}
 	}
 
@@ -67,6 +78,7 @@ func getInstances() (interface{}, error) {
 func main() {
 
 	if len(os.Args) < 3 {
+		fmt.Println("test-break")
 		panic("You must supply region and profile as arguments!")
 	}
 

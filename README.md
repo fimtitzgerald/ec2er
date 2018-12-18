@@ -5,7 +5,7 @@ Its intended to allow the user to quickly retrieve the SSH address of an instanc
  
  #### Usage 
 ```bash
-ec2er -region ca-central-1 -profile my_aws_profile
+$ ec2er -region ca-central-1 -profile my_aws_profile
 
 myInstanceLogicalName
 i-094mdnskd03i4md90
